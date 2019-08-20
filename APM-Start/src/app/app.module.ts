@@ -13,7 +13,8 @@ import { PageNotFoundComponent } from './page-not-found.component';
 /* Feature Modules */
 import { ProductModule } from './products/product.module';
 import { UserModule } from './user/user.module';
-import { MessageModule } from './messages/message.module'; import { RouterModule } from '@angular/router';
+import { MessageModule } from './messages/message.module';
+import { AppRoutingModule } from './app-routing/app-routing.module';
 
 @NgModule({
   imports: [
@@ -23,11 +24,8 @@ import { MessageModule } from './messages/message.module'; import { RouterModule
     ProductModule,
     UserModule,
     MessageModule,
-    RouterModule.forRoot([
-      {path: 'welcome', component: WelcomeComponent},
-      {path: '', redirectTo: 'welcome', pathMatch: 'full'},
-      {path: '**', component: PageNotFoundComponent}
-    ])
+    // Feature routing precedes defined routes
+    AppRoutingModule
   ],
   declarations: [
     AppComponent,
