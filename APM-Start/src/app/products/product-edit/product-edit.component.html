@@ -23,10 +23,10 @@
                  #productNameVar="ngModel"
                  [ngClass]="{'is-invalid': (productNameVar.touched || productNameVar.dirty) && !productNameVar.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="productNameVar.errors?.required">
+            <span *ngIf="productNameVar.errors['required']">
               Product name is required.
             </span>
-            <span *ngIf="productNameVar.errors?.minlength">
+            <span *ngIf="productNameVar.errors['minlength']">
               Product name must be at least three characters.
             </span>
           </span>
@@ -47,7 +47,7 @@
                  #productCodeVar="ngModel"
                  [ngClass]="{'is-invalid': (productCodeVar.touched || productCodeVar.dirty) && !productCodeVar.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="productCodeVar.errors?.required">
+            <span *ngIf="productCodeVar.errors['required']">
               Product code is required.
             </span>
           </span>
@@ -80,7 +80,8 @@
           <button class="btn btn-outline-secondary mr-3"
                   style="width:80px"
                   type="button"
-                  title="Cancel your edits">
+                  title="Cancel your edits"
+                  [routerLink]="['/products']">
             Cancel
           </button>
           <button class="btn btn-outline-warning"

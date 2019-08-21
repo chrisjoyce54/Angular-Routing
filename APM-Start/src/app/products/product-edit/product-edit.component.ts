@@ -1,22 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { MessageService } from '../../messages/message.service';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './product-edit.component.html',
   styleUrls: ['./product-edit.component.css']
 })
-export class ProductEditComponent {
+export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
   errorMessage: string;
 
   product: Product;
 
   constructor(private productService: ProductService,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private route: ActivatedRoute,
+              private router: Router) { }
+
+    ngOnInit() {
+      this.route.data.subscribe(
+        data => {
+              const resolvedData = this.route.snapshot.data['resolvedProduct'];
+              this.errorMessage = resolvedData.error;
+              this.onProductRetrieved(resolvedData.product);
+        }
+      );
+      // replaced by Observable so it tracks when data changes
+      // this.route.paramMap.subscribe(
+      //   params => {
+      //     const resolvedData = this.route.snapshot.data['resolvedProduct'];
+      //     this.errorMessage = resolvedData.error;
+      //     this.onProductRetrieved(resolvedData.product);
+      //     // const id = +params.get('id');
+      //     // this.getProduct(id);
+      //   }
+      // );
+      // const id = +this.route.snapshot.paramMap.get('id');
+      // this.getProduct(id);
+    }
 
   getProduct(id: number): void {
     this.productService.getProduct(id)
@@ -79,7 +104,7 @@ export class ProductEditComponent {
     if (message) {
       this.messageService.addMessage(message);
     }
-
+    this.router.navigate(['/products']);
     // Navigate back to the product list
   }
 }
