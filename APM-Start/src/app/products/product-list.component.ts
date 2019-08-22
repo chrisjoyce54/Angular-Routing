@@ -26,21 +26,32 @@ export class ProductListComponent implements OnInit {
 
   filteredProducts: Product[] = [];
   products: Product[] = [];
+  loading = true;
 
   constructor(private productService: ProductService,
       private route: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    this.listFilter = this.route.snapshot.queryParamMap.get('filterBy') || '';
-    this.showImage = this.route.snapshot.queryParamMap.get('showImage') === 'true';
-    this.productService.getProducts().subscribe(
-      products => {
-        this.products = products;
-        this.filteredProducts = this.performFilter(this.listFilter);
-      },
-      error => this.errorMessage = <any>error
-    );
-  }
+
+      ngOnInit(): void {
+        this.loading = true;
+        console.log('Loading = true = ' + this.loading);
+        this.listFilter = this.route.snapshot.queryParamMap.get('filterBy') || '';
+        this.showImage = this.route.snapshot.queryParamMap.get('showImage') === 'true';
+
+        this.productService.getProducts().subscribe(
+          products => {
+            this.products = products;
+            this.filteredProducts = this.performFilter(this.listFilter);
+            this.loading = false;
+            console.log('Loading = false = ' + this.loading);
+          },
+          error => {
+            this.errorMessage = <any>error;
+            this.loading = false;
+            console.log('Loading = false = ' + this.loading);
+          }
+        );
+      }
 
   performFilter(filterBy: string): Product[] {
     filterBy = filterBy.toLocaleLowerCase();
