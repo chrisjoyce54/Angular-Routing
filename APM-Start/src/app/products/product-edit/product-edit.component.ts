@@ -5,6 +5,7 @@ import { MessageService } from '../../messages/message.service';
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { retry } from 'rxjs/operators';
 
 @Component({
   templateUrl: './product-edit.component.html',
@@ -14,13 +15,26 @@ export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
   errorMessage: string;
 
-  product: Product;
   private dataIsValid: { [key: string]: boolean } = {};
+  private currentProduct: Product;
+  private originalProduct: Product;
 
   constructor(private productService: ProductService,
               private messageService: MessageService,
               private route: ActivatedRoute,
               private router: Router) { }
+
+    get product(): Product {
+      return this.currentProduct;
+    }
+    set product(value: Product) {
+      this.currentProduct = value;
+      this.originalProduct = {...value};
+    }
+
+    get isDirty(): boolean {
+      return JSON.stringify(this.originalProduct) !== JSON.stringify(this.currentProduct);
+    }
 
     ngOnInit() {
       this.route.data.subscribe(
@@ -88,7 +102,11 @@ export class ProductEditComponent implements OnInit {
     }
       return (this.dataIsValid && Object.keys(this.isValid)).every(d => this.isValid[d] === true);
     }
-
+    reset() {
+      this.dataIsValid = null;
+      this.currentProduct = null;
+      this.originalProduct = null;
+    }
   saveProduct(): void {
     if (this.isValid()) {
       if (this.product.id === 0) {
@@ -113,6 +131,7 @@ export class ProductEditComponent implements OnInit {
     if (message) {
       this.messageService.addMessage(message);
     }
+    this.reset();
     this.router.navigate(['/products']);
     // Navigate back to the product list
   }
